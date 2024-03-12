@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Musica {
+    //construtor completo
     public Musica(long id, float duracao, int faixa, String autores, String titulo, String letra, ArrayList<Disco> discos, ArrayList<Criador> criadores) {
         this.id = id;
         this.duracao = duracao;
@@ -13,6 +14,14 @@ public class Musica {
         this.letra = letra;
         this.discos = discos;
         this.criadores = criadores;
+    }
+    //construtor só o básico
+    public Musica(float duracao, int faixa, String autores, String titulo, String letra) {
+        this.duracao = duracao;
+        this.faixa = faixa;
+        this.autores = autores;
+        this.titulo = titulo;
+        this.letra = letra;
     }
 
     private long id;

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Disco {
+    //construtor com tudo
     public Disco(long identificador, LocalDate dataLancamento, double preco, int platinas, String titulo, String formato, String descricao, String genero, ArrayList<Produtor> produtores, ArrayList<Musica> musicas) {
         this.identificador = identificador;
         this.dataLancamento = dataLancamento;
@@ -17,6 +18,18 @@ public class Disco {
         this.produtores = produtores;
         this.musicas = musicas;
     }
+    //construtor só o básico
+
+    public Disco(LocalDate dataLancamento, double preco, int platinas, String titulo, String formato, String descricao, String genero) {
+        this.dataLancamento = dataLancamento;
+        this.preco = preco;
+        this.platinas = platinas;
+        this.titulo = titulo;
+        this.formato = formato;
+        this.descricao = descricao;
+        this.genero = genero;
+    }
+
     private long identificador;
     private LocalDate dataLancamento;
     private double preco;
@@ -118,5 +131,18 @@ public class Disco {
     @Override
     public int hashCode() {
         return Objects.hash(getIdentificador(), getDataLancamento(), getPreco(), getPlatinas(), getTitulo(), getFormato(), getDescricao(), getGenero());
+    }
+
+    @Override
+    public String toString() {
+        return "Disco{" +
+                "dataLancamento=" + dataLancamento +
+                ", preco=" + preco +
+                ", platinas=" + platinas +
+                ", titulo='" + titulo + '\'' +
+                ", formato='" + formato + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", genero='" + genero + '\'' +
+                '}';
     }
 }

@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Instrumento {
+    //construtor completo
     public Instrumento(long codigoInterno, String marca, String tipo, String nome, ArrayList<Musico> musicos) {
         this.codigoInterno = codigoInterno;
         this.marca = marca;
         this.tipo = tipo;
         this.nome = nome;
         this.musicos = musicos;
+    }
+    //construtor só com o básico
+    public Instrumento(String marca, String tipo, String nome) {
+        this.marca = marca;
+        this.tipo = tipo;
+        this.nome = nome;
     }
 
     private long codigoInterno;
@@ -68,5 +75,14 @@ public class Instrumento {
     @Override
     public int hashCode() {
         return Objects.hash(getMarca(), getTipo(), getNome());
+    }
+
+    @Override
+    public String toString() {
+        return "Instrumento{" +
+                "marca='" + marca + '\'' +
+                ", tipo='" + tipo + '\'' +
+                ", nome='" + nome + '\'' +
+                '}';
     }
 }

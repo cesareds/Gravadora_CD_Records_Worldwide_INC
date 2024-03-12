@@ -5,7 +5,6 @@ import dados.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Gravadora {
     private ArrayList<Banda> bandas = new ArrayList<>();
@@ -28,63 +27,66 @@ public class Gravadora {
         } catch (Exception e) {
             System.out.println("Error parsing the date: " + e.getMessage());
         }
+    }
+    public void inserirDisco(String dataLancamento, double preco, int platinas, String titulo, String formato, String descricao, String genero){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        try {
+            LocalDate localDate = LocalDate.parse(dataLancamento, formatter);
+            Disco disco = new Disco(localDate,preco,platinas,titulo,formato,descricao,genero);
+            discos.add(disco);
+        } catch (Exception e) {
+            System.out.println("Error parsing the date: " + e.getMessage());
+        }
+    }
+    public void inserirInstrumento(String marca, String tipo, String nome){
+        Instrumento instrumento = new Instrumento(marca, tipo, nome);
+        instrumentos.add(instrumento);
+    }
+    public void inserirMusica(float duracao, int faixa, String autores, String titulo, String letra){
+        Musica musica = new Musica(duracao, faixa, autores, titulo, letra);
+        musicas.add(musica);
+    }
+    public String mostraCriadores(){return "Bandas="+bandas+"\nMúsicos="+musicos;}
+    public String mostrarDiscos(){return "Discos="+discos;}
+    public String mostrarInstrumentos(){return "Instrumentos="+instrumentos;}
 
-    }
-    public String mostraCriadores(){
-        return "Gravadora{" +
-                "bandas=" + bandas +
-                ", musicos=" + musicos +
-                '}';
-    }
 
     public ArrayList<Banda> getBandas() {
         return bandas;
     }
-
     public void setBandas(ArrayList<Banda> bandas) {
         this.bandas = bandas;
     }
-
     public ArrayList<Musico> getMusicos() {
         return musicos;
     }
-
     public void setMusicos(ArrayList<Musico> musicos) {
         this.musicos = musicos;
     }
-
     public ArrayList<Disco> getDiscos() {
         return discos;
     }
-
     public void setDiscos(ArrayList<Disco> discos) {
         this.discos = discos;
     }
-
     public ArrayList<Instrumento> getInstrumentos() {
         return instrumentos;
     }
-
     public void setInstrumentos(ArrayList<Instrumento> instrumentos) {
         this.instrumentos = instrumentos;
     }
-
     public ArrayList<Musica> getMusicas() {
         return musicas;
     }
-
     public void setMusicas(ArrayList<Musica> musicas) {
         this.musicas = musicas;
     }
-
     public ArrayList<Produtor> getProdutores() {
         return produtores;
     }
-
     public void setProdutores(ArrayList<Produtor> produtores) {
         this.produtores = produtores;
     }
-
     @Override
     public String toString() {
         return "Gravadora{" +

@@ -1,9 +1,6 @@
 package principal;
 
 import sistema.Gravadora;
-
-import java.sql.SQLOutput;
-import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Main {
@@ -18,10 +15,13 @@ public class Main {
                     inserirCriador();
                     break;
                 case 2:
+                    inserirDisco();
                     break;
                 case 3:
+                    inserirInstrumento();
                     break;
                 case 4:
+                    inserirMusica();
                     break;
                 case 5:
                     break;
@@ -31,12 +31,17 @@ public class Main {
                 case 7:
                     mostrarCriadores();
                     break;
+                case 8:
+                    mostrarDiscos();
+                    break;
+                case 9:
+                    mostrarInstrumentos();
+                    break;
             }
         }while(opcao !=6);
     }
     private static final Scanner scanner = new Scanner(System.in);
     private static final Scanner scannerS = new Scanner(System.in);
-
     private static final Gravadora gravadora = new Gravadora();
 
     public static void menu(){
@@ -47,46 +52,77 @@ public class Main {
         System.out.println("INSERIR PRODUTOR......5");
         System.out.println("SAIR..................6");
         System.out.println("MOSTRAR CRIADORES.....7");
+        System.out.println("MOSTRAR DISCOS........8");
+        System.out.println("MOSTRAR INSTRUMENTOS..9");
     }
     public static void inserirCriador(){
-        int tipo;
-        String nome;
-        String genero;
-        String descricao;
         System.out.println("QUAL O TIPO DE CRIADOR? (BANDA: 0 | MUSICO: 1)");
-        tipo = scanner.nextInt();
+        int tipo = scanner.nextInt();
         System.out.print("NOME:\t");
-        nome = scannerS.nextLine();
+        String nome = scannerS.nextLine();
         System.out.print("\nGÊNERO:\t");
-        genero = scannerS.nextLine();
+        String genero = scannerS.nextLine();
         System.out.print("\nDESCRIÇÃO:\t");
-        descricao = scannerS.nextLine();
+        String descricao = scannerS.nextLine();
         if(tipo==1){
-            String cep;
-            String rua;
-            String cidade;
-            String estado;
-            String telefone;
             System.out.print("\nCEP:\t");
-            cep = scannerS.nextLine();
+            String cep = scannerS.nextLine();
             System.out.print("\nRUA:\t");
-            rua = scannerS.nextLine();
+            String rua = scannerS.nextLine();
             System.out.print("\nCIDADE:\t");
-            cidade = scannerS.nextLine();
+            String cidade = scannerS.nextLine();
             System.out.print("\nESTADO:\t");
-            estado = scannerS.nextLine();
+            String estado = scannerS.nextLine();
             System.out.print("\nTELEFONE:\t");
-            telefone = scannerS.nextLine();
+            String telefone = scannerS.nextLine();
             gravadora.inserirMusico(nome, descricao, genero, cep, rua, cidade, estado, telefone);
         }else{
-            String dataDeFormacao;
             System.out.print("\nDATA DE FORMAÇÃO DA BANDA:\t");
-            dataDeFormacao = scannerS.nextLine();
+            String dataDeFormacao = scannerS.nextLine();
             gravadora.inserirBanda(nome, descricao, genero, dataDeFormacao);
         }
     }
-    public static void mostrarCriadores(){
-        System.out.println(gravadora.mostraCriadores());
+    public static void inserirDisco(){
+        System.out.print("\nDATA DE LANÇAMENTO DO DISCO (dd/mm/yyyy):\t");
+        String dataLancamento = scannerS.nextLine();
+        System.out.print("\nPREÇO:\t");
+        double preco = scanner.nextDouble();
+        System.out.print("\nPLATINAS:\t");
+        int platinas = scanner.nextInt();
+        System.out.print("\nTÍTULO:\t");
+        String titulo = scannerS.nextLine();
+        System.out.print("\nFORMATO(vinil|cd|vhs):\t");
+        String formato = scannerS.nextLine();
+        System.out.print("\nDESCRIÇÃO:\t");
+        String descricao = scannerS.nextLine();
+        System.out.print("\nGÊNERO:\t");
+        String genero = scannerS.nextLine();
+        gravadora.inserirDisco(dataLancamento,preco,platinas,titulo,formato,descricao,genero);
+    }
+    public static void inserirInstrumento(){
+        System.out.print("\nMARCA:\t");
+        String marca = scannerS.nextLine();
+        System.out.print("\nTIPO:\t");
+        String tipo = scannerS.nextLine();
+        System.out.print("\nNOME:\t");
+        String nome = scannerS.nextLine();
+        gravadora.inserirInstrumento(marca, tipo, nome);
+    }
+    public static void inserirMusica(){
+        System.out.print("\nDURAÇÃO:\t");
+        float duracao = scanner.nextFloat();
+        System.out.print("\nFAIXA:\t");
+        int faixa = scanner.nextInt();
+        System.out.print("\nAUTORES:\t");
+        String autores = scannerS.nextLine();
+        System.out.print("\nTÍTULO:\t");
+        String titulo = scannerS.nextLine();
+        System.out.print("\nLETRA:\t");
+        String letra = scannerS.nextLine();
+        gravadora.inserirMusica(duracao, faixa, autores, titulo, letra);
     }
 
+    public static void mostrarCriadores(){System.out.println(gravadora.mostraCriadores());}
+    public static void mostrarDiscos(){System.out.println(gravadora.mostrarDiscos());}
+    public static void mostrarInstrumentos(){System.out.println(gravadora.mostrarInstrumentos());}
 }
