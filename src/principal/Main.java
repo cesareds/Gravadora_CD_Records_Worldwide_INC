@@ -3,8 +3,56 @@ package principal;
 import sistema.Gravadora;
 import java.util.Scanner;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+
+
 public class Main {
     public static void main(String[] args) {
+
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream("database.properties")) {
+            props.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        Connection connection = null;
+        try {
+            // Carregar o driver JDBC para o PostgreSQL
+            Class.forName("org.postgresql.Driver");
+
+            // Estabelecer a conexão com o banco de dados PostgreSQL
+            // Ler as propriedades
+            String dbUrl = props.getProperty("db.url");
+            String dbUsername = props.getProperty("db.username");
+            String dbPassword = props.getProperty("db.password");
+
+            connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+
+            // Agora você tem uma conexão com o banco de dados PostgreSQL
+            System.out.println("Conexão estabelecida com sucesso!");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         System.out.println("Gravadora CD Records Worldwide INC.");
         int opcao;
         do{
