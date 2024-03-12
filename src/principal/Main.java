@@ -2,56 +2,11 @@ package principal;
 
 import sistema.Gravadora;
 import java.util.Scanner;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 
 
 public class Main {
     public static void main(String[] args) {
-
-        Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream("database.properties")) {
-            props.load(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        Connection connection = null;
-        try {
-            // Carregar o driver JDBC para o PostgreSQL
-            Class.forName("org.postgresql.Driver");
-
-            // Estabelecer a conexão com o banco de dados PostgreSQL
-            // Ler as propriedades
-            String dbUrl = props.getProperty("db.url");
-            String dbUsername = props.getProperty("db.username");
-            String dbPassword = props.getProperty("db.password");
-
-            connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-
-            // Agora você tem uma conexão com o banco de dados PostgreSQL
-            System.out.println("Conexão estabelecida com sucesso!");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
 
         System.out.println("Gravadora CD Records Worldwide INC.");
         int opcao;
@@ -74,7 +29,8 @@ public class Main {
                 case 5:
                     break;
                 case 6:
-                    System.out.println("Encerrando o programa");
+                    System.out.println("Encerrando o programa...");
+                    encerrarPrograma();
                     break;
                 case 7:
                     mostrarCriadores();
@@ -90,7 +46,15 @@ public class Main {
     }
     private static final Scanner scanner = new Scanner(System.in);
     private static final Scanner scannerS = new Scanner(System.in);
-    private static final Gravadora gravadora = new Gravadora();
+    private static final Gravadora gravadora;
+
+    static {
+        try {
+            gravadora = new Gravadora();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void menu(){
         System.out.println("INSERIR CRIADOR.......1");
@@ -169,6 +133,8 @@ public class Main {
         String letra = scannerS.nextLine();
         gravadora.inserirMusica(duracao, faixa, autores, titulo, letra);
     }
+
+    public static void encerrarPrograma(){gravadora.endConnection();}
 
     public static void mostrarCriadores(){System.out.println(gravadora.mostraCriadores());}
     public static void mostrarDiscos(){System.out.println(gravadora.mostrarDiscos());}
