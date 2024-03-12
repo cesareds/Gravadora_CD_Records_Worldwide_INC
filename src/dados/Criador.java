@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Criador {
+    //construtor com tudo
     public Criador(int id, String nome, String descricao, String genero, ArrayList<Disco> discos, ArrayList<Musica> musicas) {
         this.id = id;
         this.nome = nome;
@@ -12,6 +13,13 @@ public class Criador {
         this.discos = discos;
         this.musicas = musicas;
     }
+    //construtor só com o básico
+    public Criador(String nome, String descricao, String genero) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.genero = genero;
+    }
+
     private int id;
     private String nome;
     private String descricao;

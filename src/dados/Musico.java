@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Musico extends Criador{
+    //construtor com tudo
     public Musico(int nroRegistro, String nome, String descricao, String genero, String cep, String rua, String cidade, String estado, String telefone, HashMap<Banda, String> bandaStringHashMap, ArrayList<Instrumento> instrumentos, ArrayList<Disco> discos, ArrayList<Musica> musicas) {
         super(nroRegistro, nome, descricao, genero, discos, musicas);
         this.cep = cep;
@@ -15,6 +16,16 @@ public class Musico extends Criador{
         this.bandaStringHashMap = bandaStringHashMap;
         this.instrumentos = instrumentos;
     }
+    //construtor só com o básico
+    public Musico(String nome, String descricao, String genero, String cep, String rua, String cidade, String estado, String telefone) {
+        super(nome, descricao, genero);
+        this.cep = cep;
+        this.rua = rua;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.telefone = telefone;
+    }
+
     private String cep;
     private String rua;
     private String cidade;
@@ -95,13 +106,14 @@ public class Musico extends Criador{
     @Override
     public String toString() {
         return "Musico{" +
-                "cep='" + cep + '\'' +
+                ", nome='" + super.getNome() + '\'' +
+                ", descricao='" + super.getDescricao() + '\'' +
+                ", genero='" + super.getGenero() + '\'' +
+                ", cep='" + cep + '\'' +
                 ", rua='" + rua + '\'' +
                 ", cidade='" + cidade + '\'' +
                 ", estado='" + estado + '\'' +
                 ", telefone='" + telefone + '\'' +
-                ", bandaStringHashMap=" + bandaStringHashMap +
-                ", instrumentos=" + instrumentos +
                 '}';
     }
 }
