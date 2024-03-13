@@ -2,9 +2,18 @@ package sistema;
 
 import dados.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.sql.DriverManager;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Statement;
+import java.util.Properties;
+import java.sql.ResultSet;
 
 public class Gravadora {
     private final ArrayList<Banda> bandas = new ArrayList<>();
@@ -13,6 +22,38 @@ public class Gravadora {
     private final ArrayList<Instrumento> instrumentos = new ArrayList<>();
     private final ArrayList<Musica> musicas = new ArrayList<>();
     private final ArrayList<Produtor> produtores = new ArrayList<>();
+
+    private Properties getProperties() {
+        String PROPERTIES_FILE = "database.properties";
+        Properties properties = new Properties();
+        try (FileInputStream fileInputStream = new FileInputStream(PROPERTIES_FILE)) {
+            properties.load(fileInputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return properties;
+    }
+
+        private Connection getConnection(Properties properties) throws ClassNotFoundException, SQLException {
+        Connection connection = null;
+
+        Class.forName("org.postgresql.Driver");
+
+        // Estabelecer a conexão com o banco de dados PostgreSQL
+            String url = properties.getProperty("db.url");
+            String username = properties.getProperty("db.username");
+            String password = properties.getProperty("db.password");
+
+        return DriverManager.getConnection(url, username, password);
+    }
+
+    private Statement getStatement(Connection conn) throws SQLException {
+        return conn.createStatement();
+    }
+
+    private ResultSet getResultSet(Statement stmt, String sql) throws SQLException {
+        return stmt.executeQuery(sql);
+    }
 
     public void inserirMusico(String nome, String descricao, String genero, String cep, String rua, String cidade, String estado, String telefone){
         Musico musico = new Musico(nome, descricao, genero, cep, rua, cidade, estado, telefone);
