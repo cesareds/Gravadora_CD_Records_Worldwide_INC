@@ -4,12 +4,19 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Produtor {
+    //construtor completo
     public Produtor(long id, String nome, String biografia, ArrayList<Disco> discos) {
         this.id = id;
         this.nome = nome;
         this.biografia = biografia;
         this.discos = discos;
     }
+    //construtor basico
+    public Produtor(String nome, String biografia) {
+        this.nome = nome;
+        this.biografia = biografia;
+    }
+
     private long id;
     private String nome;
     private String biografia;

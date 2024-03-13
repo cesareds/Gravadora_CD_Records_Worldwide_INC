@@ -2,7 +2,6 @@ package principal;
 
 import sistema.Gravadora;
 import java.util.Scanner;
-import java.sql.SQLException;
 
 
 public class Main {
@@ -27,10 +26,10 @@ public class Main {
                     inserirMusica();
                     break;
                 case 5:
+                    inserirProdutor();
                     break;
                 case 6:
                     System.out.println("Encerrando o programa...");
-                    encerrarPrograma();
                     break;
                 case 7:
                     mostrarCriadores();
@@ -41,31 +40,32 @@ public class Main {
                 case 9:
                     mostrarInstrumentos();
                     break;
+                case 10:
+                    mostrarMusicas();
+                    break;
+                case 11:
+                    mostrarProdutores();
+                    break;
             }
         }while(opcao !=6);
     }
     private static final Scanner scanner = new Scanner(System.in);
     private static final Scanner scannerS = new Scanner(System.in);
-    private static final Gravadora gravadora;
+    private static final Gravadora gravadora = new Gravadora();
 
-    static {
-        try {
-            gravadora = new Gravadora();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static void menu(){
-        System.out.println("INSERIR CRIADOR.......1");
-        System.out.println("INSERIR DISCO.........2");
-        System.out.println("INSERIR INSTRUMENTO...3");
-        System.out.println("INSERIR MUSICA........4");
-        System.out.println("INSERIR PRODUTOR......5");
-        System.out.println("SAIR..................6");
-        System.out.println("MOSTRAR CRIADORES.....7");
-        System.out.println("MOSTRAR DISCOS........8");
-        System.out.println("MOSTRAR INSTRUMENTOS..9");
+        System.out.println("INSERIR CRIADOR.......01");
+        System.out.println("INSERIR DISCO.........02");
+        System.out.println("INSERIR INSTRUMENTO...03");
+        System.out.println("INSERIR MUSICA........04");
+        System.out.println("INSERIR PRODUTOR......05");
+        System.out.println("SAIR..................06");
+        System.out.println("MOSTRAR CRIADORES.....07");
+        System.out.println("MOSTRAR DISCOS........08");
+        System.out.println("MOSTRAR INSTRUMENTOS..09");
+        System.out.println("MOSTRAR MÚSICAS.......10");
+        System.out.println("MOSTRAR PRODUTORES....11");
     }
     public static void inserirCriador(){
         System.out.println("QUAL O TIPO DE CRIADOR? (BANDA: 0 | MUSICO: 1)");
@@ -133,10 +133,18 @@ public class Main {
         String letra = scannerS.nextLine();
         gravadora.inserirMusica(duracao, faixa, autores, titulo, letra);
     }
-
-    public static void encerrarPrograma(){gravadora.endConnection();}
+    public static void inserirProdutor(){
+        System.out.print("\nNOME:\t");
+        String nome = scannerS.nextLine();
+        System.out.println("\nBIOGRAFIA:\t");
+        String biografia = scannerS.nextLine();
+        gravadora.inserirProdutor(nome, biografia);
+    }
 
     public static void mostrarCriadores(){System.out.println(gravadora.mostraCriadores());}
     public static void mostrarDiscos(){System.out.println(gravadora.mostrarDiscos());}
     public static void mostrarInstrumentos(){System.out.println(gravadora.mostrarInstrumentos());}
+    public static void mostrarMusicas(){System.out.println(gravadora.mostrarMusicas());}
+    public static void mostrarProdutores(){System.out.println(gravadora.mostrarProdutores());}
+
 }

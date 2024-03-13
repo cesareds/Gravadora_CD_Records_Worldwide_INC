@@ -25,76 +25,32 @@ public class Musica {
     }
 
     private long id;
-    private float duracao;
-    private int faixa;
-    private String autores;
-    private String titulo;
-    private String letra;
+    private final float duracao;
+    private final int faixa;
+    private final String autores;
+    private final String titulo;
+    private final String letra;
     private ArrayList<Disco> discos = new ArrayList<>();
     private ArrayList<Criador> criadores = new ArrayList<>();
 
-    public ArrayList<Criador> getCriadores() {
-        return criadores;
-    }
-
-    public void setCriadores(ArrayList<Criador> criadores) {
-        this.criadores = criadores;
-    }
-
-    public ArrayList<Disco> getDiscos() {
-        return discos;
-    }
-
-    public void setDiscos(ArrayList<Disco> discos) {
-        this.discos = discos;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public float getDuracao() {
         return duracao;
-    }
-
-    public void setDuracao(float duracao) {
-        this.duracao = duracao;
     }
 
     public int getFaixa() {
         return faixa;
     }
 
-    public void setFaixa(int faixa) {
-        this.faixa = faixa;
-    }
-
     public String getAutores() {
         return autores;
-    }
-
-    public void setAutores(String autores) {
-        this.autores = autores;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
     public String getLetra() {
         return letra;
-    }
-
-    public void setLetra(String letra) {
-        this.letra = letra;
     }
 
     @Override
