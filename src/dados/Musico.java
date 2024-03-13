@@ -26,68 +26,34 @@ public class Musico extends Criador{
         this.telefone = telefone;
     }
 
-    private String cep;
-    private String rua;
-    private String cidade;
-    private String estado;
-    private String telefone;
+    private final String cep;
+    private final String rua;
+    private final String cidade;
+    private final String estado;
+    private final String telefone;
     private HashMap<Banda, String> bandaStringHashMap = new HashMap<>();
     private ArrayList<Instrumento> instrumentos = new ArrayList<>();
 
-    public HashMap<Banda, String> getBandaStringHashMap() {
-        return bandaStringHashMap;
-    }
 
-    public void setBandaStringHashMap(HashMap<Banda, String> bandaStringHashMap) {
-        this.bandaStringHashMap = bandaStringHashMap;
-    }
-
-    public ArrayList<Instrumento> getInstrumentos() {
-        return instrumentos;
-    }
-
-    public void setInstrumentos(ArrayList<Instrumento> instrumentos) {
-        this.instrumentos = instrumentos;
-    }
 
     public String getCep() {
         return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
     }
 
     public String getRua() {
         return rua;
     }
 
-    public void setRua(String rua) {
-        this.rua = rua;
-    }
-
     public String getCidade() {
         return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
     }
 
     public String getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
     public String getTelefone() {
         return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
     }
 
     @Override
