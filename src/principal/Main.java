@@ -1,11 +1,34 @@
 package principal;
 
 import sistema.Gravadora;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Scanner;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 
 public class Main {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+
+        Properties prop = Gravadora.getProperties();
+        Connection conn = Gravadora.getConnection(prop);
+        assert conn != null;
+        Statement statement = Gravadora.getStatement(conn);
+        String sql = "SELECT * FROM criador";
+
+        ResultSet resultSet = Gravadora.getResultSet(statement, sql);
+
+        // Process the result set here
+
 
         System.out.println("Gravadora CD Records Worldwide INC.");
         int opcao;

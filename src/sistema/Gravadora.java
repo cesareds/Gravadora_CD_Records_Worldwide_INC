@@ -22,8 +22,7 @@ public class Gravadora {
     private final ArrayList<Instrumento> instrumentos = new ArrayList<>();
     private final ArrayList<Musica> musicas = new ArrayList<>();
     private final ArrayList<Produtor> produtores = new ArrayList<>();
-
-    private Properties getProperties() {
+    public static Properties getProperties() {
         String PROPERTIES_FILE = "database.properties";
         Properties properties = new Properties();
         try (FileInputStream fileInputStream = new FileInputStream(PROPERTIES_FILE)) {
@@ -33,27 +32,32 @@ public class Gravadora {
         }
         return properties;
     }
+    public static Connection getConnection(Properties properties) throws ClassNotFoundException, SQLException {
+        try{
+            Class.forName("org.postgresql.Driver");
 
-        private Connection getConnection(Properties properties) throws ClassNotFoundException, SQLException {
-        Connection connection = null;
-
-        Class.forName("org.postgresql.Driver");
-
-        // Estabelecer a conexão com o banco de dados PostgreSQL
-            String url = properties.getProperty("db.url");
-            String username = properties.getProperty("db.username");
-            String password = properties.getProperty("db.password");
-
-        return DriverManager.getConnection(url, username, password);
+            // Estabelecer a conexão com o banco de dados PostgreSQL
+            String url = properties.getProperty("DB_PATH");
+            String username = properties.getProperty("DB_USER");
+            String password = properties.getProperty("DB_PASSWORD");
+            return DriverManager.getConnection(url, username, password);
+        }catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
     }
 
-    private Statement getStatement(Connection conn) throws SQLException {
+    public static Statement getStatement(Connection conn) throws SQLException {
         return conn.createStatement();
     }
 
-    private ResultSet getResultSet(Statement stmt, String sql) throws SQLException {
+    public static ResultSet getResultSet(Statement stmt, String sql) throws SQLException {
         return stmt.executeQuery(sql);
     }
+
+
+
+
 
     public void inserirMusico(String nome, String descricao, String genero, String cep, String rua, String cidade, String estado, String telefone){
         Musico musico = new Musico(nome, descricao, genero, cep, rua, cidade, estado, telefone);
@@ -68,6 +72,26 @@ public class Gravadora {
         } catch (Exception e) {
             System.out.println("Error parsing the date: " + e.getMessage());
         }
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            assert connection != null;
+            Statement statement = getStatement(connection);
+            String sql = "INSERT INTO criador(nome, descricao, genero) VALUES ('Guilherme', 'desc1', 'M')";
+            ResultSet resultSet = getResultSet(statement, sql);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                System.out.println("ID: " + id);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
     public void inserirDisco(String dataLancamento, double preco, int platinas, String titulo, String formato, String descricao, String genero){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
