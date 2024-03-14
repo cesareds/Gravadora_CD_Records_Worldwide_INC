@@ -22,6 +22,7 @@ public class Gravadora {
     private final ArrayList<Instrumento> instrumentos = new ArrayList<>();
     private final ArrayList<Musica> musicas = new ArrayList<>();
     private final ArrayList<Produtor> produtores = new ArrayList<>();
+
     public static Properties getProperties() {
         String PROPERTIES_FILE = "database.properties";
         Properties properties = new Properties();
@@ -46,18 +47,12 @@ public class Gravadora {
             return null;
         }
     }
-
     public static Statement getStatement(Connection conn) throws SQLException {
         return conn.createStatement();
     }
-
     public static ResultSet getResultSet(Statement stmt, String sql) throws SQLException {
         return stmt.executeQuery(sql);
     }
-
-
-
-
 
     public void inserirMusico(String nome, String descricao, String genero, String cep, String rua, String cidade, String estado, String telefone){
         Musico musico = new Musico(nome, descricao, genero, cep, rua, cidade, estado, telefone);
