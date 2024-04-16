@@ -79,14 +79,14 @@ public class Disco {
 
     @Override
     public String toString() {
-        return "Disco{" +
-                "dataLancamento=" + dataLancamento +
-                ", preco=" + preco +
-                ", platinas=" + platinas +
-                ", titulo='" + titulo + '\'' +
-                ", formato='" + formato + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", genero='" + genero + '\'' +
-                '}';
+        return "Disco_" + identificador + " {\n"+
+                "\tdataLancamento=" + dataLancamento + ",\n" +
+                "\tpreco=" + preco + ",\n" +
+                "\tplatinas=" + platinas + ",\n" +
+                "\ttitulo='" + titulo + ",\n" +
+                "\tformato='" + formato + ",\n" +
+                "\tdescricao='" + descricao + ",\n" +
+                "\tgenero='" + genero +
+                "\n}";
     }
 }

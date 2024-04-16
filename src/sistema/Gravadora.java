@@ -18,10 +18,46 @@ import java.sql.ResultSet;
 public class Gravadora {
     private final ArrayList<Banda> bandas = new ArrayList<>();
     private final ArrayList<Musico> musicos = new ArrayList<>();
-    private final ArrayList<Disco> discos = new ArrayList<>();
+    private ArrayList<Disco> discos = new ArrayList<>();
     private final ArrayList<Instrumento> instrumentos = new ArrayList<>();
     private final ArrayList<Musica> musicas = new ArrayList<>();
     private final ArrayList<Produtor> produtores = new ArrayList<>();
+
+    private ArrayList<Disco> getDiscos() {
+        ArrayList<Disco> discos = new ArrayList<>();
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+            assert connection != null;
+            Statement statement = getStatement(connection);
+            String sql = "SELECT * FROM Disco";
+            ResultSet resultSet = getResultSet(statement, sql);
+            while (resultSet.next()) {
+                discos.add(new Disco(
+                        resultSet.getDate("dataLancamento").toLocalDate(),
+                        resultSet.getFloat("preco"),
+                        resultSet.getInt("platinas"),
+                        resultSet.getString("titulo"),
+                        resultSet.getString("formato"),
+                        resultSet.getString("descricao"),
+                        resultSet.getString("descricao")
+                ));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Error closing connection: " + e.getMessage());
+                }
+            }
+        }
+        return discos;
+    }
 
     public static Properties getProperties() {
         String PROPERTIES_FILE = "database.properties";
@@ -34,7 +70,7 @@ public class Gravadora {
         return properties;
     }
     public static Connection getConnection(Properties properties) throws ClassNotFoundException, SQLException {
-        try{
+        try {
             Class.forName("org.postgresql.Driver");
 
             // Estabelecer a conexão com o banco de dados PostgreSQL
@@ -42,7 +78,7 @@ public class Gravadora {
             String username = properties.getProperty("DB_USER");
             String password = properties.getProperty("DB_PASSWORD");
             return DriverManager.getConnection(url, username, password);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
             return null;
         }
@@ -111,7 +147,14 @@ public class Gravadora {
         produtores.add(produtor);
     }
     public String mostraCriadores(){return "Bandas="+bandas+"\nMúsicos="+musicos;}
-    public String mostrarDiscos(){return "Discos="+discos;}
+    public String mostrarDiscos(){
+        discos = getDiscos();
+        String string_discos  = "";
+        for (Disco disco : discos) {
+            string_discos += disco;
+        }
+        return "Discos:\n" + string_discos;
+    }
     public String mostrarInstrumentos(){return "Instrumentos="+instrumentos;}
     public String mostrarMusicas(){return "Músicas=" + musicas;}
     public String mostrarProdutores(){return "Produtores=" + produtores;}
