@@ -2,18 +2,14 @@ package sistema;
 
 import dados.*;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.sql.DriverManager;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Statement;
 import java.util.Properties;
-import java.sql.ResultSet;
 
 public class Gravadora {
     private final ArrayList<Banda> bandas = new ArrayList<>();
@@ -21,7 +17,7 @@ public class Gravadora {
     private ArrayList<Disco> discos = new ArrayList<>();
     private final ArrayList<Instrumento> instrumentos = new ArrayList<>();
     private final ArrayList<Musica> musicas = new ArrayList<>();
-    private final ArrayList<Produtor> produtores = new ArrayList<>();
+    private ArrayList<Produtor> produtores = new ArrayList<>();
 
     private ArrayList<Disco> getDiscos() {
         ArrayList<Disco> discos = new ArrayList<>();
@@ -34,7 +30,7 @@ public class Gravadora {
             String sql = "SELECT * FROM Disco";
             ResultSet resultSet = getResultSet(statement, sql);
             while (resultSet.next()) {
-                discos.add(new Disco(
+                Disco disco = new Disco(
                         resultSet.getDate("dataLancamento").toLocalDate(),
                         resultSet.getFloat("preco"),
                         resultSet.getInt("platinas"),
@@ -42,7 +38,10 @@ public class Gravadora {
                         resultSet.getString("formato"),
                         resultSet.getString("descricao"),
                         resultSet.getString("descricao")
-                ));
+                );
+                int identificador = resultSet.getInt("identificador");
+                disco.setIdentificador(identificador);
+                discos.add(disco);
             }
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Error: " + e.getMessage());
@@ -57,6 +56,39 @@ public class Gravadora {
             }
         }
         return discos;
+    }
+
+    private ArrayList<Produtor> getProdutor() {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+            assert connection != null;
+            Statement statement = getStatement(connection);
+            String sql = "SELECT * FROM produtor";
+            ResultSet resultSet = getResultSet(statement, sql);
+            while (resultSet.next()) {
+                Produtor produtor = new Produtor(
+                        resultSet.getString("nome"),
+                        resultSet.getString("biografia")
+                );
+                int identificador = resultSet.getInt("id");
+                produtor.setIdentificador(identificador);
+                produtores.add(produtor);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Error closing connection: " + e.getMessage());
+                }
+            }
+        }
+        return produtores;
     }
 
     public static Properties getProperties() {
@@ -90,19 +122,7 @@ public class Gravadora {
         return stmt.executeQuery(sql);
     }
 
-    public void inserirMusico(String nome, String descricao, String genero, String cep, String rua, String cidade, String estado, String telefone){
-        Musico musico = new Musico(nome, descricao, genero, cep, rua, cidade, estado, telefone);
-        musicos.add(musico);
-    }
-    public void inserirBanda(String nome, String descricao, String genero, String dataDeFormacao){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        try {
-            LocalDate localDate = LocalDate.parse(dataDeFormacao, formatter);
-            Banda banda = new Banda(nome, descricao, genero, localDate);
-            bandas.add(banda);
-        } catch (Exception e) {
-            System.out.println("Error parsing the date: " + e.getMessage());
-        }
+    public void inserirMusico(String nome, String descricao, String genero, String cep, String rua, String cidade, String estado, String telefone) {
         Properties properties = getProperties();
         Connection connection = null;
         try {
@@ -110,45 +130,363 @@ public class Gravadora {
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
+
         try {
+            // Prepare the SQL insert statement
+            String insertSQL = "INSERT INTO MUSICO (nome, descricao, genero, cep, rua, cidade, estado, telefone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             assert connection != null;
-            Statement statement = getStatement(connection);
-            String sql = "INSERT INTO criador(nome, descricao, genero) VALUES ('Guilherme', 'desc1', 'M')";
-            ResultSet resultSet = getResultSet(statement, sql);
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                System.out.println("ID: " + id);
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            // Set the values for the prepared statement
+            preparedStatement.setString(1, nome);
+            preparedStatement.setString(2, descricao);
+            preparedStatement.setString(3, genero);
+            preparedStatement.setString(4, cep);
+            preparedStatement.setString(5, rua);
+            preparedStatement.setString(6, cidade);
+            preparedStatement.setString(7, estado);
+            preparedStatement.setString(8, telefone);
+
+            // Execute the insert statement
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+
+            // Optionally, you can retrieve the generated keys if the table has an auto-increment column
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long generatedId = generatedKeys.getLong(1);
+                System.out.println("Inserted Musico ID: " + generatedId);
             }
-        } catch (SQLException e) {
+
+            // Add the new Musico to the in-memory list (assuming musicos is defined elsewhere)
+            Musico musico = new Musico(nome, descricao, genero, cep, rua, cidade, estado, telefone);
+            musicos.add(musico);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+    public void inserirBanda(String nome, String descricao, String genero, String dataDeFormacao) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
 
-    }
-    public void inserirDisco(String dataLancamento, double preco, int platinas, String titulo, String formato, String descricao, String genero){
+        // Define the date formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         try {
-            LocalDate localDate = LocalDate.parse(dataLancamento, formatter);
-            Disco disco = new Disco(localDate,preco,platinas,titulo,formato,descricao,genero);
-            discos.add(disco);
+            // Parse the date
+            LocalDate localDate = LocalDate.parse(dataDeFormacao, formatter);
+
+            // Prepare the SQL insert statement
+            String insertSQL = "INSERT INTO BANDA (nome, descricao, genero, dataDeFormacao) VALUES (?, ?, ?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            // Set the values for the prepared statement
+            preparedStatement.setString(1, nome);
+            preparedStatement.setString(2, descricao);
+            preparedStatement.setString(3, genero);
+            preparedStatement.setDate(4, java.sql.Date.valueOf(localDate));
+
+            // Execute the insert statement
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+
+            // Optionally, you can retrieve the generated keys if the table has an auto-increment column
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long generatedId = generatedKeys.getLong(1);
+                System.out.println("Inserted Banda ID: " + generatedId);
+            }
+
+            // Add the new Banda to the in-memory list (assuming bandas is defined elsewhere)
+            Banda banda = new Banda(nome, descricao, genero, localDate);
+            bandas.add(banda);
+
         } catch (Exception e) {
-            System.out.println("Error parsing the date: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
         }
     }
-    public void inserirInstrumento(String marca, String tipo, String nome){
-        Instrumento instrumento = new Instrumento(marca, tipo, nome);
-        instrumentos.add(instrumento);
+    public void inserirDisco(String dataLancamento, double preco, int platinas, String titulo, String formato, String descricao, String genero){
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Define the date formatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        try {
+            // Parse the date
+            LocalDate localDate = LocalDate.parse(dataLancamento, formatter);
+
+            // Prepare the SQL insert statement
+            String insertSQL = "INSERT INTO DISCO (dataLancamento, preco, platinas, titulo, formato, descricao, genero) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            // Set the values for the prepared statement
+            preparedStatement.setDate(1, java.sql.Date.valueOf(localDate));
+            preparedStatement.setDouble(2, preco);
+            preparedStatement.setInt(3, platinas);
+            preparedStatement.setString(4, titulo);
+            preparedStatement.setString(5, formato);
+            preparedStatement.setString(6, descricao);
+            preparedStatement.setString(7, genero);
+
+            // Execute the insert statement
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+
+            // Optionally, you can retrieve the generated keys if the table has an auto-increment column
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long generatedId = generatedKeys.getLong(1);
+                System.out.println("Inserted Disco ID: " + generatedId);
+            }
+
+            // Add the new Disco to the in-memory list (assuming discos is defined elsewhere)
+            Disco disco = new Disco(localDate, preco, platinas, titulo, formato, descricao, genero);
+            discos.add(disco);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
     }
-    public void inserirMusica(float duracao, int faixa, String autores, String titulo, String letra){
-        Musica musica = new Musica(duracao, faixa, autores, titulo, letra);
-        musicas.add(musica);
+    public void inserirInstrumento(String marca, String tipo, String nome) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            // Prepare the SQL insert statement
+            String insertSQL = "INSERT INTO INSTRUMENTO (marca, tipo, nome) VALUES (?, ?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            // Set the values for the prepared statement
+            preparedStatement.setString(1, marca);
+            preparedStatement.setString(2, tipo);
+            preparedStatement.setString(3, nome);
+
+            // Execute the insert statement
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+
+            // Optionally, you can retrieve the generated keys if the table has an auto-increment column
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long generatedId = generatedKeys.getLong(1);
+                System.out.println("Inserted Instrumento ID: " + generatedId);
+            }
+
+            // Add the new Instrumento to the in-memory list (assuming instrumentos is defined elsewhere)
+            Instrumento instrumento = new Instrumento(marca, tipo, nome);
+            instrumentos.add(instrumento);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
     }
-    public void inserirProdutor(String nome, String biografia){
-        Produtor produtor = new Produtor(nome, biografia);
-        produtores.add(produtor);
+    public void inserirMusica(float duracao, int faixa, String autores, String titulo, String letra) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            // Prepare the SQL insert statement
+            String insertSQL = "INSERT INTO MUSICA (duracao, faixa, autores, titulo, letra) VALUES (?, ?, ?, ?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            // Set the values for the prepared statement
+            preparedStatement.setFloat(1, duracao);
+            preparedStatement.setInt(2, faixa);
+            preparedStatement.setString(3, autores);
+            preparedStatement.setString(4, titulo);
+            preparedStatement.setString(5, letra);
+
+            // Execute the insert statement
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+
+            // Optionally, you can retrieve the generated keys if the table has an auto-increment column
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long generatedId = generatedKeys.getLong(1);
+                System.out.println("Inserted Musica ID: " + generatedId);
+            }
+
+            // Add the new Musica to the in-memory list (assuming musicas is defined elsewhere)
+            Musica musica = new Musica(duracao, faixa, autores, titulo, letra);
+            musicas.add(musica);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
     }
-    public String mostraCriadores(){return "Bandas="+bandas+"\nMúsicos="+musicos;}
+
+    public void inserirProdutor(String nome, String biografia) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            // Prepare the SQL insert statement
+            String insertSQL = "INSERT INTO PRODUTOR (nome, biografia) VALUES (?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            // Set the values for the prepared statement
+            preparedStatement.setString(1, nome);
+            preparedStatement.setString(2, biografia);
+
+            // Execute the insert statement
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+
+            // Optionally, you can retrieve the generated keys if the table has an auto-increment column
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long generatedId = generatedKeys.getLong(1);
+                System.out.println("Inserted Produtor ID: " + generatedId);
+            }
+
+            // Add the new Produtor to the in-memory list (assuming produtores is defined elsewhere)
+            Produtor produtor = new Produtor(nome, biografia);
+            produtores.add(produtor);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+    public String mostraCriadores() {
+        Properties properties = getProperties();
+        Connection connection = null;
+
+        // Clear existing lists
+        bandas.clear();
+        musicos.clear();
+
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            assert connection != null;
+            Statement statement = connection.createStatement();
+
+            // Retrieve Bandas
+            String selectBandasSQL = "SELECT nome, descricao, genero, dataDeFormacao FROM BANDA";
+            ResultSet rsBandas = statement.executeQuery(selectBandasSQL);
+            while (rsBandas.next()) {
+                String nome = rsBandas.getString("nome");
+                String descricao = rsBandas.getString("descricao");
+                String genero = rsBandas.getString("genero");
+                LocalDate dataDeFormacao = rsBandas.getDate("dataDeFormacao").toLocalDate();
+                Banda banda = new Banda(nome, descricao, genero, dataDeFormacao);
+                bandas.add(banda);
+            }
+
+            // Retrieve Musicos
+            String selectMusicosSQL = "SELECT nome, descricao, genero, cep, rua, cidade, estado, telefone FROM MUSICO";
+            ResultSet rsMusicos = statement.executeQuery(selectMusicosSQL);
+            while (rsMusicos.next()) {
+                String nome = rsMusicos.getString("nome");
+                String descricao = rsMusicos.getString("descricao");
+                String genero = rsMusicos.getString("genero");
+                String cep = rsMusicos.getString("cep");
+                String rua = rsMusicos.getString("rua");
+                String cidade = rsMusicos.getString("cidade");
+                String estado = rsMusicos.getString("estado");
+                String telefone = rsMusicos.getString("telefone");
+                Musico musico = new Musico(nome, descricao, genero, cep, rua, cidade, estado, telefone);
+                musicos.add(musico);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            // Close the connection
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+
+        // Build the result string
+
+        return "Bandas=" + bandas + "\n" +
+                "Músicos=" + musicos + "\n";
+    }
     public String mostrarDiscos(){
         discos = getDiscos();
+        int i = 0;
         String string_discos  = "";
         for (Disco disco : discos) {
             string_discos += disco;
@@ -157,7 +495,50 @@ public class Gravadora {
     }
     public String mostrarInstrumentos(){return "Instrumentos="+instrumentos;}
     public String mostrarMusicas(){return "Músicas=" + musicas;}
-    public String mostrarProdutores(){return "Produtores=" + produtores;}
+    public String mostrarProdutores(){
+        produtores = getProdutor();
+        String string_produtores  = "";
+        for (Produtor produtor : produtores) {
+            string_produtores += produtor;
+        }
+        return "Produtores:\n" + string_produtores;}
+
+    public void produzirDisco(long idDisco, long idProdutor) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            // Prepare the SQL insert statement
+            String insertSQL = "INSERT INTO Produzir (idDisco, idProdutor) VALUES (?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+
+            // Set the values for the prepared statement
+            preparedStatement.setLong(1, idDisco);
+            preparedStatement.setLong(2, idProdutor);
+
+            // Execute the insert statement
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+
+
     @Override
     public String toString() {
         return "Gravadora{" +

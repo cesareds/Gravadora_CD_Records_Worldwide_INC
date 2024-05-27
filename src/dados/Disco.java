@@ -65,6 +65,7 @@ public class Disco {
     public String getGenero() {
         return genero;
     }
+    public void setIdentificador(int id) {identificador = id;}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,7 +80,7 @@ public class Disco {
 
     @Override
     public String toString() {
-        return "Disco_" + identificador + " {\n"+
+        return "Disco: " + "{\n\tId: "+  identificador + ",\n" +
                 "\tdataLancamento=" + dataLancamento + ",\n" +
                 "\tpreco=" + preco + ",\n" +
                 "\tplatinas=" + platinas + ",\n" +

@@ -7,11 +7,23 @@ import javax.swing.*;
 import java.util.Scanner;
 import java.sql.SQLException;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.sql.DriverManager;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Statement;
+import java.util.Properties;
+import java.sql.ResultSet;
+
 
 public class Main {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-
         Gui gui = new Gui();
         gui.setContentPane(gui.panelMain);
         gui.setTitle("GRAVADORA CD RECORDS WORLDWIDE INC");
@@ -151,6 +163,8 @@ public class Main {
         System.out.println("\nBIOGRAFIA:\t");
         String biografia = scannerS.nextLine();
         gravadora.inserirProdutor(nome, biografia);
+    }
+    public static void produzir() {
     }
 
     public static void mostrarCriadores(){System.out.println(gravadora.mostraCriadores());}

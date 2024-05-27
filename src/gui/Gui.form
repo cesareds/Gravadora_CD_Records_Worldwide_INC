@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="gui.Gui">
-  <grid id="27dc6" binding="panelMain" layout-manager="GridLayoutManager" row-count="6" column-count="11" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="panelMain" layout-manager="GridLayoutManager" row-count="7" column-count="11" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="610" height="240"/>
+      <xy x="20" y="20" width="616" height="286"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -19,7 +19,7 @@
       </component>
       <vspacer id="92e13">
         <constraints>
-          <grid row="5" column="0" row-span="1" col-span="11" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="0" row-span="1" col-span="11" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
       <component id="2899e" class="javax.swing.JButton" binding="adicionarButton" default-binding="true">
@@ -88,6 +88,31 @@
         <properties>
           <icon value="assets/transparent_2024-03-13T23-32-38.png"/>
           <text value=""/>
+        </properties>
+      </component>
+      <component id="304fc" class="javax.swing.JComboBox" binding="mostrarComboBox">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="8" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="Selecione Algo Para Mostrar:"/>
+            <item value="Bandas"/>
+            <item value="Músicos"/>
+            <item value="Discos"/>
+            <item value="Instrumentos"/>
+            <item value="Músicas"/>
+            <item value="Produtores"/>
+          </model>
+        </properties>
+      </component>
+      <component id="723aa" class="javax.swing.JButton" binding="mostrarButton">
+        <constraints>
+          <grid row="5" column="9" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <actionCommand value="Mostrar"/>
+          <text value="Mostrar"/>
         </properties>
       </component>
     </children>

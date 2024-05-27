@@ -54,6 +54,9 @@ public class Produtor {
         this.biografia = biografia;
     }
 
+    public void setIdentificador(int id) {this.id = id;}
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,6 +75,6 @@ public class Produtor {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", biografia='" + biografia + '\'' +
-                '}';
+                "}\n";
     }
 }
