@@ -187,3 +187,21 @@ create or replace trigger trigger_remove_copia_instument
     for each row
     execute function remove_copias_instrumento();
 
+-- f5 Verifica se ja existe criador antes de inserir banda
+
+CREATE OR REPLACE FUNCTION verificar_criador_existe()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM CRIADOR) THEN
+        RAISE EXCEPTION 'Você precisa adicionar um criador antes de adicionar uma banda';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verificar_criador_antes_inserir
+BEFORE INSERT ON BANDA
+FOR EACH ROW
+EXECUTE FUNCTION verificar_criador_existe();
+
