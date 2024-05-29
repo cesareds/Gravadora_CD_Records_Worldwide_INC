@@ -218,4 +218,32 @@ FOR EACH ROW
 EXECUTE FUNCTION inserir_criador();
 
 
+CREATE OR REPLACE FUNCTION remove_duplicados_criador()
+RETURNS VOID AS $$
+BEGIN
+    DELETE FROM Criador WHERE id = (SELECT MAX(id) FROM Criador)
+	AND ctid = (SELECT ctid FROM Criador WHERE id = (SELECT MAX(id) FROM Criador) LIMIT 1);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION remove_duplicados_after_insert()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        PERFORM remove_duplicados_criador();
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER remove_duplicados_trigger
+AFTER INSERT ON Musico
+FOR EACH ROW
+EXECUTE FUNCTION remove_duplicados_after_insert();
+
+CREATE TRIGGER remove_duplicados_trigger_banda
+AFTER INSERT ON Banda
+FOR EACH ROW
+EXECUTE FUNCTION remove_duplicados_after_insert();
+
 
