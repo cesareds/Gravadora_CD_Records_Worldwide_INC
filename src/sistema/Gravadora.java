@@ -190,9 +190,16 @@ public class Gravadora {
             LocalDate localDate = LocalDate.parse(dataDeFormacao, formatter);
 
             // Prepare the SQL insert statement
-            String insertSQL = "INSERT INTO BANDA (nome, descricao, genero, dataDeFormacao) VALUES (?, ?, ?, ?)";
+            String insertSQLCriador = "INSERT INTO criador (nome, descricao, genero) VALUES (?, ?, ?)";
             assert connection != null;
-            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQLCriador);
+
+            // Set the values for the prepared statement
+            preparedStatement.setString(1, nome);
+            preparedStatement.setString(2, descricao);
+            preparedStatement.setString(3, genero);
+            String insertSQL = "INSERT INTO BANDA (nome, descricao, genero, dataDeFormacao) VALUES (?, ?, ?, ?)";
+            preparedStatement = connection.prepareStatement(insertSQL);
 
             // Set the values for the prepared statement
             preparedStatement.setString(1, nome);

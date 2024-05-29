@@ -7,18 +7,19 @@ CREATE TABLE Criador(
                         descricao varchar(255),
                         genero varchar(255)
 );
-CREATE TABLE Musico(
-                       nroDeRegistro bigserial PRIMARY KEY REFERENCES Criador(id),
-                       cep      varchar(8),
-                       rua      varchar(255),
-                       cidade   varchar(255),
-                       estado   varchar(255),
-                       telefone varchar(25)
-)INHERITS (Criador);
-CREATE TABLE Banda(
-                      id bigserial PRIMARY KEY REFERENCES Criador(id),
-                      dataDeFormacao date
-)INHERITS (Criador);
+CREATE TABLE Musico (
+    cep varchar(8),
+    rua varchar(255),
+    cidade varchar(255),
+    estado varchar(255),
+    telefone varchar(25) UNIQUE, -- Add unique constraint here
+    PRIMARY KEY (id) -- Assuming id is inherited from Criador
+) INHERITS (Criador);
+
+CREATE TABLE Banda (
+    id bigserial PRIMARY KEY, -- Add primary key constraint here
+    dataDeFormacao date
+) INHERITS (Criador);
 
 CREATE TABLE Disco(
                       identificador bigserial PRIMARY KEY,
@@ -70,13 +71,13 @@ CREATE TABLE Tocar(
                       idInstrumento bigint,
                       idMusico bigint,
                       FOREIGN KEY (idInstrumento) REFERENCES Instrumento(codigoInterno),
-                      FOREIGN KEY (idMusico) REFERENCES Musico(nroDeRegistro)
+                      FOREIGN KEY (idMusico) REFERENCES Musico(id)
 );
 CREATE TABLE Integrar(
                          id bigserial PRIMARY KEY,
                          idMusico bigint,
                          idBanda bigint,
-                         FOREIGN KEY (idMusico) REFERENCES Musico(nroDeRegistro),
+                         FOREIGN KEY (idMusico) REFERENCES Musico(id),
                          FOREIGN KEY (idBanda) REFERENCES Banda(id)
 );
 CREATE TABLE Participacao(
@@ -189,19 +190,32 @@ create or replace trigger trigger_remove_copia_instument
 
 -- f5 Verifica se ja existe criador antes de inserir banda
 
-CREATE OR REPLACE FUNCTION verificar_criador_existe()
+CREATE OR REPLACE FUNCTION inserir_criador()
 RETURNS TRIGGER AS $$
+DECLARE
+    novo_id BIGINT;
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM CRIADOR) THEN
-        RAISE EXCEPTION 'Você precisa adicionar um criador antes de adicionar uma banda';
-    END IF;
+    -- Insere um novo criador e captura o id gerado
+    INSERT INTO Criador (nome, descricao, genero)
+    VALUES (NEW.nome, NEW.descricao, NEW.genero)
+    RETURNING id INTO novo_id;
+
+    -- Atribui o id gerado ao novo registro de Musico ou Banda
+    NEW.id := novo_id;
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER verificar_criador_antes_inserir
-BEFORE INSERT ON BANDA
+CREATE TRIGGER trigger_inserir_criador_musico
+BEFORE INSERT ON Musico
 FOR EACH ROW
-EXECUTE FUNCTION verificar_criador_existe();
+EXECUTE FUNCTION inserir_criador();
+
+CREATE TRIGGER trigger_inserir_criador_banda
+BEFORE INSERT ON Banda
+FOR EACH ROW
+EXECUTE FUNCTION inserir_criador();
+
+
 
