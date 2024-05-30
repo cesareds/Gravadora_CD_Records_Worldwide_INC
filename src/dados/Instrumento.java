@@ -19,6 +19,10 @@ public class Instrumento {
         this.nome = nome;
     }
 
+    public void setCodigoInterno(long codigoInterno) {
+        this.codigoInterno = codigoInterno;
+    }
+
     private long codigoInterno;
     private final String marca;
     private final String tipo;
@@ -55,6 +59,6 @@ public class Instrumento {
                 "marca='" + marca + '\'' +
                 ", tipo='" + tipo + '\'' +
                 ", nome='" + nome + '\'' +
-                '}';
+                "}\n";
     }
 }

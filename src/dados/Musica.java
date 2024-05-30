@@ -23,7 +23,9 @@ public class Musica {
         this.titulo = titulo;
         this.letra = letra;
     }
-
+    public void setId(long id){
+        this.id = id;
+    }
     private long id;
     private final float duracao;
     private final int faixa;
@@ -74,6 +76,6 @@ public class Musica {
                 ", autores='" + autores + '\'' +
                 ", titulo='" + titulo + '\'' +
                 ", letra='" + letra + '\'' +
-                '}';
+                "}\n";
     }
 }

@@ -15,10 +15,81 @@ public class Gravadora {
     private final ArrayList<Banda> bandas = new ArrayList<>();
     private final ArrayList<Musico> musicos = new ArrayList<>();
     private ArrayList<Disco> discos = new ArrayList<>();
-    private final ArrayList<Instrumento> instrumentos = new ArrayList<>();
-    private final ArrayList<Musica> musicas = new ArrayList<>();
+    private ArrayList<Instrumento> instrumentos = new ArrayList<>();
+    private ArrayList<Musica> musicas = new ArrayList<>();
     private ArrayList<Produtor> produtores = new ArrayList<>();
 
+
+    private ArrayList<Musica> getMusicas(){
+        ArrayList<Musica> musicas1 = new ArrayList<>();
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+            assert connection != null;
+            Statement statement = getStatement(connection);
+            String sql = "SELECT * FROM Musica";
+            ResultSet resultSet = getResultSet(statement, sql);
+            while (resultSet.next()) {
+                Musica musica = new Musica(
+                        resultSet.getFloat("duracao"),
+                        resultSet.getInt("faixa"),
+                        resultSet.getString("autores"),
+                        resultSet.getString("titulo"),
+                        resultSet.getString("letra")
+                );
+                int identificador = resultSet.getInt("id");
+                musica.setId(identificador);
+                musicas1.add(musica);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Error closing connection: " + e.getMessage());
+                }
+            }
+        }
+        return musicas1;
+    }
+    private ArrayList<Instrumento> getInstrumentos(){
+        ArrayList<Instrumento> instrumentos1 = new ArrayList<>();
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+            assert connection != null;
+            Statement statement = getStatement(connection);
+            String sql = "SELECT * FROM Instrumento";
+            ResultSet resultSet = getResultSet(statement, sql);
+            while (resultSet.next()) {
+                Instrumento instrumento = new Instrumento(
+                        resultSet.getString("marca"),
+                        resultSet.getString("tipo"),
+                        resultSet.getString("nome")
+                );
+                int identificador = resultSet.getInt("codigointerno");
+                instrumento.setCodigoInterno(identificador);
+                instrumentos1.add(instrumento);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Error closing connection: " + e.getMessage());
+                }
+            }
+        }
+        return instrumentos1;
+    }
     private ArrayList<Disco> getDiscos() {
         ArrayList<Disco> discos = new ArrayList<>();
         Properties properties = getProperties();
@@ -483,6 +554,7 @@ public class Gravadora {
                 "Músicos=" + musicos + "\n";
     }
     public String mostrarDiscos(){
+        discos.clear();
         discos = getDiscos();
         int i = 0;
         String string_discos  = "";
@@ -491,15 +563,33 @@ public class Gravadora {
         }
         return "Discos:\n" + string_discos;
     }
-    public String mostrarInstrumentos(){return "Instrumentos="+instrumentos;}
-    public String mostrarMusicas(){return "Músicas=" + musicas;}
+    public String mostrarInstrumentos(){
+        instrumentos.clear();
+        instrumentos = getInstrumentos();
+        String string_instrumentos  = "";
+        for (Instrumento instrumento : instrumentos) {
+            string_instrumentos += instrumento;
+        }
+        return "Instrumentos:\n" + string_instrumentos;
+    }
+    public String mostrarMusicas(){
+        musicas.clear();
+        musicas = getMusicas();
+        String string_musicas  = "";
+        for (Musica musica : musicas) {
+            string_musicas += musica;
+        }
+        return "Musicas:\n" + string_musicas;
+    }
     public String mostrarProdutores(){
+        produtores.clear();
         produtores = getProdutor();
         String string_produtores  = "";
         for (Produtor produtor : produtores) {
             string_produtores += produtor;
         }
-        return "Produtores:\n" + string_produtores;}
+        return "Produtores:\n" + string_produtores;
+    }
 
     public void produzirDisco(long idDisco, long idProdutor) {
         Properties properties = getProperties();
@@ -509,25 +599,95 @@ public class Gravadora {
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
-
         try {
-            // Prepare the SQL insert statement
             String insertSQL = "INSERT INTO Produzir (idDisco, idProdutor) VALUES (?, ?)";
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
-
-            // Set the values for the prepared statement
             preparedStatement.setLong(1, idDisco);
             preparedStatement.setLong(2, idProdutor);
-
-            // Execute the insert statement
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
-
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
         } finally {
-            // Close the connection and statement
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+    public void tocar(long idInstrumento, long idMusico) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            String insertSQL = "INSERT INTO Tocar (idinstrumento, idmusico) VALUES (?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setLong(1, idInstrumento);
+            preparedStatement.setLong(2, idMusico);
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+    public void participar(long idMusica, long idCriador) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            String insertSQL = "INSERT INTO participacao (idMusica, idCriador) VALUES (?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setLong(1, idMusica);
+            preparedStatement.setLong(2, idCriador);
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+    public void lancar(long idDisco, long idCriador) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            String insertSQL = "INSERT INTO lancamento (idDisco, idCriador) VALUES (?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setLong(1, idDisco);
+            preparedStatement.setLong(2, idCriador);
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
             try {
                 if (connection != null) connection.close();
             } catch (SQLException e) {
@@ -547,5 +707,32 @@ public class Gravadora {
                 ", musicas=" + musicas +
                 ", produtores=" + produtores +
                 '}';
+    }
+
+    public void integrar(long idMusico, long idBanda) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            String insertSQL = "INSERT INTO integrar (idMusico, idBanda) VALUES (?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setLong(1, idMusico);
+            preparedStatement.setLong(2, idBanda);
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
     }
 }

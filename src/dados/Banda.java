@@ -36,6 +36,6 @@ public class Banda extends Criador{
                 ", descricao='" + super.getDescricao() + '\'' +
                 ", genero='" + super.getGenero() + '\'' +
                 ", dataDeFormacao=" + dataDeFormacao +
-                '}';
+                "}\n";
     }
 }

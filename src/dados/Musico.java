@@ -80,6 +80,6 @@ public class Musico extends Criador{
                 ", cidade='" + cidade + '\'' +
                 ", estado='" + estado + '\'' +
                 ", telefone='" + telefone + '\'' +
-                '}';
+                "}\n";
     }
 }

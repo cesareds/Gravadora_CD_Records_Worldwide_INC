@@ -75,6 +75,24 @@ public class Main {
                 case 11:
                     mostrarProdutores();
                     break;
+                case 12:
+                    produzirDisco();
+                    break;
+                case 13:
+                    tocar();
+                    break;
+                case 14:
+                    participar();
+                    break;
+                case 15:
+                    lancar();
+                    break;
+                case 16:
+                    integrar();
+                    break;
+                default:
+                    System.out.println("ESCOLHA UMA OPÇÃO VÁLIDA!!!!!!");
+                    break;
             }
         }while(opcao !=6);
     }
@@ -95,6 +113,11 @@ public class Main {
         System.out.println("MOSTRAR INSTRUMENTOS..09");
         System.out.println("MOSTRAR MÚSICAS.......10");
         System.out.println("MOSTRAR PRODUTORES....11");
+        System.out.println("PRODUZIR DISCO........12");
+        System.out.println("TOCAR.................13");
+        System.out.println("PARTICIPAÇÃO..........14");
+        System.out.println("LANÇAMENTO............15");
+        System.out.println("INTEGRAR..............16");
     }
     public static void inserirCriador(){
         System.out.println("QUAL O TIPO DE CRIADOR? (BANDA: 0 | MUSICO: 1)");
@@ -169,7 +192,40 @@ public class Main {
         String biografia = scannerS.nextLine();
         gravadora.inserirProdutor(nome, biografia);
     }
-    public static void produzir() {
+    public static void produzirDisco() {
+        System.out.print("\nIDDISCO:\t");
+        long idDisco = scanner.nextLong();
+        System.out.println("\nIDPRODUTOR:\t");
+        long idProdutor = scanner.nextLong();
+        gravadora.produzirDisco(idDisco, idProdutor);
+    }
+    public static void tocar(){
+        System.out.print("\nIDINSTRUMENTO:\t");
+        long idInstrumento = scanner.nextLong();
+        System.out.println("\nIDMUSICO:\t");
+        long idMusico = scanner.nextLong();
+        gravadora.tocar(idInstrumento, idMusico);
+    }
+    public static void participar(){
+        System.out.print("\nIDMUSICA:\t");
+        long idMusica = scanner.nextLong();
+        System.out.println("\nIDCRIADOR (MUSICO OU BANDA!!!):\t");
+        long idCriador = scanner.nextLong();
+        gravadora.participar(idMusica, idCriador);
+    }
+    public static void lancar(){
+        System.out.print("\nIDDISCO:\t");
+        long idDisco = scanner.nextLong();
+        System.out.println("\nIDCRIADOR (MUSICO OU BANDA!!!):\t");
+        long idCriador = scanner.nextLong();
+        gravadora.lancar(idDisco, idCriador);
+    }
+    public static void integrar(){
+        System.out.print("\nIDMUSICO:\t");
+        long idMusico = scanner.nextLong();
+        System.out.println("\nIDBANDA:\t");
+        long idBanda = scanner.nextLong();
+        gravadora.integrar(idMusico, idBanda);
     }
 
     public static void mostrarCriadores(){System.out.println(gravadora.mostraCriadores());}

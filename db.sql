@@ -219,4 +219,66 @@ EXECUTE FUNCTION inserir_criador();
 
 
 
+CREATE OR REPLACE FUNCTION mostrarProduzir() RETURNS TABLE (titulo varchar(255), identificador bigint, nome varchar(255), id bigint)
+AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT DISTINCT d.titulo, d.identificador, p.nome, p.id
+  FROM produzir pro
+  JOIN disco d ON d.identificador = pro.iddisco
+  JOIN produtor p ON p.id = pro.idprodutor;
+END;
+$$
+language plpgsql;
 
+CREATE OR REPLACE FUNCTION mostrarTocar() RETURNS TABLE (instrumento varchar(255), identificador bigint, nome varchar(255), id bigint)
+AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT DISTINCT i.nome, i.codigointerno, m.nome, m.id
+  FROM tocar toc
+  JOIN instrumento i ON i.codigointerno = toc.idinstrumento
+  JOIN musico m ON m.id = toc.idmusico;
+END;
+$$
+language plpgsql;
+CREATE OR REPLACE FUNCTION mostrarParticipacao() RETURNS TABLE (nome1 varchar(255), identificador bigint, nome2 varchar(255), id bigint)
+AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT DISTINCT m.titulo, m.id, c.nome, c.id
+  FROM participacao par
+  JOIN musica m ON m.id = par.idmusica
+  JOIN criador c ON c.id = par.idcriador;
+END;
+$$
+language plpgsql;
+
+CREATE OR REPLACE FUNCTION mostrarLancamento() RETURNS TABLE (nome1 varchar(255), identificador bigint, nome2 varchar(255), id bigint)
+AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT DISTINCT d.titulo, d.identificador, c.nome, c.id
+  FROM lancamento lan
+  JOIN disco d ON d.identificador = lan.iddisco
+  JOIN criador c ON c.id = lan.idcriador;
+END;
+$$
+language plpgsql;
+
+CREATE OR REPLACE FUNCTION mostrarIntegramentacao() RETURNS TABLE (nome1 varchar(255), identificador bigint, nome2 varchar(255), id bigint)
+AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT DISTINCT m.nome, m.id, b.nome, b.id
+  FROM integrar i
+  JOIN musico m ON m.id = i.idmusico
+  JOIN banda b ON b.id = i.idbanda;
+END;
+$$
+language plpgsql;
