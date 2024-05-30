@@ -56,6 +56,36 @@ public class Gravadora {
         }
         return musicas1;
     }
+    public void getRelacao(String function){
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+            assert connection != null;
+            Statement statement = getStatement(connection);
+            String sql = "SELECT * FROM " + function;
+            ResultSet resultSet = getResultSet(statement, sql);
+            while (resultSet.next()) {
+                String nome1 = resultSet.getString("nome1");
+                String nome2 = resultSet.getString("nome2");
+                long identificador = resultSet.getLong("identificador");
+                long id = resultSet.getLong("id");
+                System.out.println("Nome 1:\t" + nome1 + "\tcom id:\t" +  identificador + "\nNome 2:\t" + nome2 + "\tcom id:\t" + id);
+                System.out.println("---------------------------------------------------------------------");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Error closing connection: " + e.getMessage());
+                }
+            }
+        }
+    }
     private ArrayList<Instrumento> getInstrumentos(){
         ArrayList<Instrumento> instrumentos1 = new ArrayList<>();
         Properties properties = getProperties();
@@ -723,6 +753,33 @@ public class Gravadora {
             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
             preparedStatement.setLong(1, idMusico);
             preparedStatement.setLong(2, idBanda);
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + rowsAffected);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+
+    public void incluir(long idMusica, long iddisco) {
+        Properties properties = getProperties();
+        Connection connection = null;
+        try {
+            connection = getConnection(properties);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            String insertSQL = "INSERT INTO incluir (idMusica, iddisco) VALUES (?, ?)";
+            assert connection != null;
+            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL);
+            preparedStatement.setLong(1, idMusica);
+            preparedStatement.setLong(2, iddisco);
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
         } catch (SQLException e) {

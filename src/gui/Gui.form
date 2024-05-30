@@ -103,6 +103,12 @@
             <item value="Instrumentos"/>
             <item value="Músicas"/>
             <item value="Produtores"/>
+            <item value="ATRELAMENTO PRODUZIDOS"/>
+            <item value="ATRELAMENTO TOCADAS "/>
+            <item value="ATRELAMENTO PARTICIPACAO"/>
+            <item value="ATRELAMENTO INTEGRAÇÃO"/>
+            <item value="ATRELAMENTO LANCAMENTO"/>
+            <item value="ATRELAMENTO INCLUIR"/>
           </model>
         </properties>
       </component>

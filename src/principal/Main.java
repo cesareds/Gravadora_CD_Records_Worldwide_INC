@@ -90,6 +90,14 @@ public class Main {
                 case 16:
                     integrar();
                     break;
+                case 17:
+                    incluir();
+                    break;
+                case 18:
+                    System.out.print("\nO que voce quer ver??:\n"+ "1: producoes\n"+ "2: tocadas\n"+ "3: participacoes\n"+ "4: lançamentos"+ "\n5: integrações\n"+ "6: inclusoes\n");
+                    int receba = scanner.nextInt();
+                    mostrarAtrelamentos(receba);
+                    break;
                 default:
                     System.out.println("ESCOLHA UMA OPÇÃO VÁLIDA!!!!!!");
                     break;
@@ -118,6 +126,8 @@ public class Main {
         System.out.println("PARTICIPAÇÃO..........14");
         System.out.println("LANÇAMENTO............15");
         System.out.println("INTEGRAR..............16");
+        System.out.println("INCLUIR...............17");
+        System.out.println("MOSTRAR ATRELAMENTO...18");
     }
     public static void inserirCriador(){
         System.out.println("QUAL O TIPO DE CRIADOR? (BANDA: 0 | MUSICO: 1)");
@@ -226,6 +236,37 @@ public class Main {
         System.out.println("\nIDBANDA:\t");
         long idBanda = scanner.nextLong();
         gravadora.integrar(idMusico, idBanda);
+    }
+    public static void incluir(){
+        System.out.print("\nIDMUSICA:\t");
+        long idMusica = scanner.nextLong();
+        System.out.println("\nIDDISCO:\t");
+        long iddisco = scanner.nextLong();
+        gravadora.incluir(idMusica, iddisco);
+    }
+    public static void mostrarAtrelamentos(int receba){
+        String function = new String();
+        switch (receba){
+            case 1:
+                function = "mostrarProduzir()";
+                break;
+            case 2:
+                function = "mostrarTocar()";
+                break;
+            case 3:
+                function = "mostrarParticipacao()";
+                break;
+            case 4:
+                function = "mostrarLancamento()";
+                break;
+            case 5:
+                function = "mostrarIntegramentacao()";
+                break;
+            case 6:
+                function = "mostrarIncluir()";
+                break;
+        }
+        gravadora.getRelacao(function);
     }
 
     public static void mostrarCriadores(){System.out.println(gravadora.mostraCriadores());}

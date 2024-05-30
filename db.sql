@@ -218,8 +218,20 @@ FOR EACH ROW
 EXECUTE FUNCTION inserir_criador();
 
 
+CREATE OR REPLACE FUNCTION mostrarIncluir() RETURNS TABLE (nome1 varchar(255), identificador bigint, nome2 varchar(255), id bigint)
+AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT DISTINCT d.titulo, d.identificador, p.nome, p.id
+  FROM incluir inc
+  JOIN disco d ON d.identificador = pro.iddisco
+  JOIN musica m ON m.id = pro.idprodutor;
+END;
+$$
+language plpgsql;
 
-CREATE OR REPLACE FUNCTION mostrarProduzir() RETURNS TABLE (titulo varchar(255), identificador bigint, nome varchar(255), id bigint)
+CREATE OR REPLACE FUNCTION mostrarProduzir() RETURNS TABLE (nome1 varchar(255), identificador bigint, nome2 varchar(255), id bigint)
 AS
 $$
 BEGIN
@@ -232,7 +244,7 @@ END;
 $$
 language plpgsql;
 
-CREATE OR REPLACE FUNCTION mostrarTocar() RETURNS TABLE (instrumento varchar(255), identificador bigint, nome varchar(255), id bigint)
+CREATE OR REPLACE FUNCTION mostrarTocar() RETURNS TABLE (nome1 varchar(255), identificador bigint, nome2 varchar(255), id bigint)
 AS
 $$
 BEGIN
