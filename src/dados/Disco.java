@@ -19,7 +19,6 @@ public class Disco {
         this.musicas = musicas;
     }
     //construtor só o básico
-
     public Disco(LocalDate dataLancamento, double preco, int platinas, String titulo, String formato, String descricao, String genero) {
         this.dataLancamento = dataLancamento;
         this.preco = preco;
@@ -31,96 +30,42 @@ public class Disco {
     }
 
     private long identificador;
-    private LocalDate dataLancamento;
-    private double preco;
-    private int platinas;
-    private String titulo;
-    private String formato;
-    private String descricao;
-    private String genero;
+    private final LocalDate dataLancamento;
+    private final double preco;
+    private final int platinas;
+    private final String titulo;
+    private final String formato;
+    private final String descricao;
+    private final String genero;
     private ArrayList<Produtor> produtores = new ArrayList<>();
     private ArrayList<Musica> musicas = new ArrayList<>();
 
-    public ArrayList<Produtor> getProdutores() {
-        return produtores;
-    }
-
-    public void setProdutores(ArrayList<Produtor> produtores) {
-        this.produtores = produtores;
-    }
-
-    public ArrayList<Musica> getMusicas() {
-        return musicas;
-    }
-
-    public void setMusicas(ArrayList<Musica> musicas) {
-        this.musicas = musicas;
-    }
 
     public long getIdentificador() {
         return identificador;
     }
-
-    public void setIdentificador(long identificador) {
-        this.identificador = identificador;
-    }
-
     public LocalDate getDataLancamento() {
         return dataLancamento;
     }
-
-    public void setDataLancamento(LocalDate dataLancamento) {
-        this.dataLancamento = dataLancamento;
-    }
-
     public double getPreco() {
         return preco;
     }
-
-    public void setPreco(double preco) {
-        this.preco = preco;
-    }
-
     public int getPlatinas() {
         return platinas;
     }
-
-    public void setPlatinas(int platinas) {
-        this.platinas = platinas;
-    }
-
     public String getTitulo() {
         return titulo;
     }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
     public String getFormato() {
         return formato;
     }
-
-    public void setFormato(String formato) {
-        this.formato = formato;
-    }
-
     public String getDescricao() {
         return descricao;
     }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
     public String getGenero() {
         return genero;
     }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
+    public void setIdentificador(int id) {identificador = id;}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -135,14 +80,14 @@ public class Disco {
 
     @Override
     public String toString() {
-        return "Disco{" +
-                "dataLancamento=" + dataLancamento +
-                ", preco=" + preco +
-                ", platinas=" + platinas +
-                ", titulo='" + titulo + '\'' +
-                ", formato='" + formato + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", genero='" + genero + '\'' +
-                '}';
+        return "Disco: " + "{\n\tId: "+  identificador + ",\n" +
+                "\tdataLancamento=" + dataLancamento + ",\n" +
+                "\tpreco=" + preco + ",\n" +
+                "\tplatinas=" + platinas + ",\n" +
+                "\ttitulo='" + titulo + ",\n" +
+                "\tformato='" + formato + ",\n" +
+                "\tdescricao='" + descricao + ",\n" +
+                "\tgenero='" + genero +
+                "\n}";
     }
 }

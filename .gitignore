@@ -26,4 +26,7 @@ bin/
 .vscode/
 
 ### Mac OS ###
+
+### Personal ###
+database.properties
 .DS_Store
